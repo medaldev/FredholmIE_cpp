@@ -26,16 +26,16 @@ int to_I(int i1, int i2, int n) {
 }
 
 
-double intg2(tuple<double, double> X[], int i1, int i2, int j1, int j2, double lam, int n, int nq) {
+double intg2(tuple<double, double> **X, int i1, int i2, int j1, int j2, double lam, int n, int nq) {
     double sum = 0.;
 
-    auto [a11, a21] = X[to_I(i1, i2, n)];
-    auto [a12, a22] = X[to_I(i1 + 1, i2 + 1, n)];
+    auto [a11, a21] = X[i1][i2];
+    auto [a12, a22] = X[i1 + 1][i2 + 1];
     double h1 = get_step(a11, a12, nq);
     double h2 = get_step(a21, a22, nq);
 
-    auto [b11, b21] = X[to_I(j1, j2, n)];
-    auto [b12, b22] = X[to_I(j1 + 1, j2 + 1, n)];
+    auto [b11, b21] = X[j1][j2];
+    auto [b12, b22] = X[j1 + 1][j2 + 1];
     double h3 = get_step(b11, b12, nq);
     double h4 = get_step(b21, b22, nq);
 
@@ -65,11 +65,11 @@ double intg2(tuple<double, double> X[], int i1, int i2, int j1, int j2, double l
 }
 
 
-double intg1(tuple<double, double> X[], int i1, int i2, double lam, int n, int nq) {
+double intg1(tuple<double, double> **X, int i1, int i2, double lam, int n, int nq) {
     double sum = 0.;
 
-    auto [a11, a21] = X[to_I(i1, i2, n)];
-    auto [a12, a22] = X[to_I(i1 + 1, i2 + 1, n)];
+    auto [a11, a21] = X[i1][i2];
+    auto [a12, a22] = X[i1 + 1][i2 + 1];
     double h1 = get_step(a11, a12, nq);
     double h2 = get_step(a21, a22, nq);
 
@@ -96,7 +96,7 @@ double intg1(tuple<double, double> X[], int i1, int i2, double lam, int n, int n
 
 int main_lab4() {
 
-    const int n = 4;
+    const int n = 10;
 
     const double a1 = 0., b1 = 1.;
     const double a2 = 0., b2 = 1.;
@@ -109,26 +109,32 @@ int main_lab4() {
 
     double C[N];
 
-    tuple<double, double> X[N + 1];
+    auto ** X =  new tuple<double, double> * [N + 1];
 
     auto ** A = new double * [N];
+
+    for(int i1=0;i1<N+1; i1++) {
+        A[i1] = new double[N + 1];
+        X[i1] = new tuple<double, double>[N + 1];
+    }
+
+
 
     double h1 = get_step(a1, b1, n);
     double h2 = get_step(a2, b2, n);
 
     for (int i=0; i < n + 1; i++) {
+
         for (int j=0; j < n + 1; j++) {
             double x_1 = a1 + i * h1;
             double x_2 = b1 * j * h2;
-            X[i * n + j] = {x_1, x_2};
+            X[i][j] = {x_1, x_2};
         }
     }
 
-    cout << "ss\n";
+    // cout << "ss\n";
 
-    for(int i1=0;i1<N; i1++) {
-        A[i1] = new double[N + 1];
-    }
+
 
     for(int i1=0;i1<n; i1++){
         for(int i2=0;i2<n; i2++) {
@@ -138,17 +144,17 @@ int main_lab4() {
             for(int i3=0;i3<n; i3++) {
                 for (int i4 = 0; i4 < n; i4++) {
                     int J = to_I(i3, i4, n);
-                    cout << "-> " << I << " " << J << " | (" << i1 << i2 << i3 << i4 << " \n";
+                    // cout << "-> " << I << " " << J << " | (" << i1 << i2 << i3 << i4 << " \n";
                     A[I][J] = (I == J) * h1 * h2 - lam * intg2(X, i1, i2, i3, i4, lam, n, nq);
                 }
             }
-            cout << "---NNN---" << I << " " << N << "\n";
+            // cout << "---NNN---" << I << " " << N << "\n";
             A[I][N]=intg1(X, i1, i2, lam, n, nq);
         }
     }
 
 
-    print_matrix(A, N, N + 1);
+    //print_matrix(A, N, N + 1);
     //gauss((double **)&A, n, (double *)&C);
     gauss(A, N, C);
     for (int ci = 0; ci < N; ci++) {
