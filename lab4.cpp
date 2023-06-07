@@ -40,20 +40,20 @@ double intg2(tuple<double, double> X[], int i1, int i2, int j1, int j2, double l
     double h4 = get_step(b21, b22, nq);
 
 
-    for (int k1 = 0; i1 < nq; i1++) {
+    for (int k1 = 0; k1 < nq; k1++) {
 
         double x1 = a11 + (k1 + 0.5) * h1;
 
-        for (int k2 = 0; i2 < nq; i2++) {
+        for (int k2 = 0; k2 < nq; k2++) {
 
-            double x2 = a12 + (k2 + 0.5) * h2;
+            double x2 = a21 + (k2 + 0.5) * h2;
 
-            for (int k3 = 0; j1 < nq; j1++) {
+            for (int k3 = 0; k3 < nq; k3++) {
 
                 double x3 = b11 + (k3 + 0.5) * h3;
 
-                for (int k4 = 0; j2 < nq; j2++) {
-                    double x4 = b12 + (k4 + 0.5) * h4;
+                for (int k4 = 0; k4 < nq; k4++) {
+                    double x4 = b21 + (k4 + 0.5) * h4;
 
                     sum += K(x1, x2, x3, x4);
                 }
@@ -73,18 +73,21 @@ double intg1(tuple<double, double> X[], int i1, int i2, double lam, int n, int n
     double h1 = get_step(a11, a12, nq);
     double h2 = get_step(a21, a22, nq);
 
+    // cout << a11 << " " << a12 << " " << a21 << " " << a22 << "  |  \n";
 
-    for (int k1 = 0; i1 < nq; i1++) {
+
+    for (int k1 = 0; k1 < nq; k1++) {
 
         double x1 = a11 + (k1 + 0.5) * h1;
 
-        for (int k2 = 0; i2 < nq; i2++) {
+        for (int k2 = 0; k2 < nq; k2++) {
 
-            double x2 = a12 + (k2 + 0.5) * h2;
+            double x2 = a21 + (k2 + 0.5) * h2;
 
             sum += u0(x1, x2, lam);
         }
     }
+    // cout << h1 << " " << h2 << "\n";
     return sum * h1 * h2;
 
 }
@@ -93,15 +96,14 @@ double intg1(tuple<double, double> X[], int i1, int i2, double lam, int n, int n
 
 int main_lab4() {
 
-    const int n = 2;
+    const int n = 4;
 
     const double a1 = 0., b1 = 1.;
     const double a2 = 0., b2 = 1.;
 
-    cout << "init a, b\n";
 
     const double lam = 0.1;
-    const int nq = 3;
+    const int nq = 10;
 
     int N = n * n;
 
@@ -135,9 +137,8 @@ int main_lab4() {
 
             for(int i3=0;i3<n; i3++) {
                 for (int i4 = 0; i4 < n; i4++) {
-                    cout << "pp\n";
                     int J = to_I(i3, i4, n);
-                    cout << I << " " << J << "\n";
+                    cout << "-> " << I << " " << J << " | (" << i1 << i2 << i3 << i4 << " \n";
                     A[I][J] = (I == J) * h1 * h2 - lam * intg2(X, i1, i2, i3, i4, lam, n, nq);
                 }
             }

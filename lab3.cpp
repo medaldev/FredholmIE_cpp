@@ -48,8 +48,28 @@ double phi(double x, int i, double X[], int n) {
 
 double intg2(double X[], int i, int j, double lam, int n, int nq) {
     double sum = 0.;
-    double h1 = get_step(X[i], X[i + 1], nq);
-    double h2 = get_step(X[j], X[j + 1], nq);
+
+    double h1, h2;
+
+    if (i == 0) {
+        h1 = get_step(X[i], X[i + 1], nq);
+    }
+    else if (i == n) {
+        h1 = get_step(X[i - 1], X[i], nq);
+    }
+    else {
+        h1 = get_step(X[i - 1], X[i + 1], nq);
+    }
+
+    if (j == 0) {
+        h2 = get_step(X[j], X[j + 1], nq);
+    }
+    else if (j == n) {
+        h2 = get_step(X[j - 1], X[j], nq);
+    }
+    else {
+        h2 = get_step(X[j - 1], X[j + 1], nq);
+    }
 
     for (int i1 = 0; i1 < nq; i1++) {
         double x1 = X[i] + (i1 + 0.5) * h1;
@@ -68,7 +88,18 @@ double intg2(double X[], int i, int j, double lam, int n, int nq) {
 
 double intg1(double X[], int i, double lam, int n, int nq) {
     double sum = 0.;
-    double h1 = get_step(X[i], X[i + 1], nq);
+
+    double h1;
+
+    if (i == 0) {
+        h1 = get_step(X[i], X[i + 1], nq);
+    }
+    else if (i == n) {
+        h1 = get_step(X[i - 1], X[i], nq);
+    }
+    else {
+        h1 = get_step(X[i - 1], X[i + 1], nq);
+    }
 
     for (int i1 = 0; i1 < nq; i1++) {
         double x1 = X[i] + (i1 + 0.5) * h1;
@@ -83,7 +114,7 @@ int main_lab3() {
     const int n = 10;
     const double a = 0., b = 1.;
     const double lam = 0.1;
-    const int nq = 1000;
+    const int nq = 100;
     double X[n];
 
     double h = get_step(a, b, n);
