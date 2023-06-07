@@ -4,6 +4,7 @@
 
 #include "lab3.h"
 #include <iostream>
+#include <tuple>
 #include "somemodule.h"
 using namespace std;
 
@@ -27,16 +28,16 @@ double phi_n(double x, double v1, double v2) {
 }
 
 double phi_i(double x, double v_prev, double v_this, double v_next) {
-    if (x >= v_prev && x <= v_this) {
+    if ((x >= v_prev) && (x <= v_this)) {
         return (x - v_prev) / (v_this - v_prev);
-    } else if (x >= v_this && x <= v_next) {
+    } else if ((x >= v_this) && (x <= v_next)) {
         return (v_next - x) / (v_next - v_this);
     } else {
         return 0.;
     }
 }
 
-double phi(double x, int i, double X[], int n) {
+double phi(double x, int i, double *X, int n) {
     if (i == 0) {
         return phi_0(x, X[0], X[1]);
     } else if (i == n)  {
@@ -46,37 +47,34 @@ double phi(double x, int i, double X[], int n) {
     }
 }
 
-double intg2(double X[], int i, int j, double lam, int n, int nq) {
+tuple<double, double> get_range(int i, double *X, int n) {
+    if (i == 0) {
+        return {X[0], X[1]};
+    } else if (i == n)  {
+        return {X[n - 1], X[n]};
+    } else {
+        return {X[i - 1], X[i + 1]};
+    }
+}
+
+double intg2(double *X, int i, int j, double lam, int n, int nq) {
     double sum = 0.;
 
     double h1, h2;
 
-    if (i == 0) {
-        h1 = get_step(X[i], X[i + 1], nq);
-    }
-    else if (i == n) {
-        h1 = get_step(X[i - 1], X[i], nq);
-    }
-    else {
-        h1 = get_step(X[i - 1], X[i + 1], nq);
-    }
+    auto [a1, a2] = get_range(i, X, n);
+    auto [b1, b2] = get_range(j, X, n);
 
-    if (j == 0) {
-        h2 = get_step(X[j], X[j + 1], nq);
-    }
-    else if (j == n) {
-        h2 = get_step(X[j - 1], X[j], nq);
-    }
-    else {
-        h2 = get_step(X[j - 1], X[j + 1], nq);
-    }
+    h1 = get_step(a1, a2, nq);
+    h2 = get_step(b1, b2, nq);
+
 
     for (int i1 = 0; i1 < nq; i1++) {
-        double x1 = X[i] + (i1 + 0.5) * h1;
+        double x1 = a1 + (i1 + 0.5) * h1;
         double left = phi(x1, i, X, n) * phi(x1, j, X, n);
 
         for (int i2 = 0; i2 < nq; i2++) {
-            double x2 = X[j] + (i2 + 0.5) * h2;
+            double x2 = b2 + (i2 + 0.5) * h2;
 
             sum += -lam * K(x1, x2) * phi(x1, i, X, n) * phi(x2, j, X, n) * h2;
         }
@@ -91,18 +89,11 @@ double intg1(double X[], int i, double lam, int n, int nq) {
 
     double h1;
 
-    if (i == 0) {
-        h1 = get_step(X[i], X[i + 1], nq);
-    }
-    else if (i == n) {
-        h1 = get_step(X[i - 1], X[i], nq);
-    }
-    else {
-        h1 = get_step(X[i - 1], X[i + 1], nq);
-    }
+    auto [a1, a2] = get_range(i, X, n);
+    h1 = get_step(a1, a2, nq);
 
     for (int i1 = 0; i1 < nq; i1++) {
-        double x1 = X[i] + (i1 + 0.5) * h1;
+        double x1 = a1 + (i1 + 0.5) * h1;
         sum += u0(x1, lam) * phi(x1, i, X, n);
     }
 
@@ -111,14 +102,16 @@ double intg1(double X[], int i, double lam, int n, int nq) {
 
 int main_lab3() {
 
-    const int n = 10;
+    const int n = 30;
     const double a = 0., b = 1.;
     const double lam = 0.1;
     const int nq = 100;
-    double X[n];
+    double *X = new double [n];
 
     double h = get_step(a, b, n);
     grid(X, a, b, n);
+
+
 
     double C[n + 1];
     double ** A = new double * [n + 1];
