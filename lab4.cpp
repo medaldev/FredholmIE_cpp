@@ -15,11 +15,11 @@ double u0(double x1, double x2, double lam) {
 }
 
 
-tuple<int, int> to_i1_i2 (int I, int n) {
-    int i = I % n;
-    int j = I - i * n;
-    return {i, j};
-}
+//tuple<int, int> to_i1_i2 (int I, int n) {
+//    int i = I % n;
+//    int j = I - i * n;
+//    return {i, j};
+//}
 
 int to_I(int i1, int i2, int n) {
     return i2 * n + i1;
@@ -109,7 +109,7 @@ int main_lab4() {
 
     double C[N];
 
-    tuple<double, double> X[N];
+    tuple<double, double> X[N + 1];
 
     auto ** A = new double * [N];
 
@@ -142,7 +142,7 @@ int main_lab4() {
                     A[I][J] = (I == J) * h1 * h2 - lam * intg2(X, i1, i2, i3, i4, lam, n, nq);
                 }
             }
-
+            cout << "---NNN---" << I << " " << N << "\n";
             A[I][N]=intg1(X, i1, i2, lam, n, nq);
         }
     }
