@@ -74,7 +74,7 @@ double intg2(double *X, int i, int j, double lam, int n, int nq) {
         double left = phi(x1, i, X, n) * phi(x1, j, X, n);
 
         for (int i2 = 0; i2 < nq; i2++) {
-            double x2 = b2 + (i2 + 0.5) * h2;
+            double x2 = b1 + (i2 + 0.5) * h2;
 
             sum += -lam * K(x1, x2) * phi(x1, i, X, n) * phi(x2, j, X, n) * h2;
         }
@@ -84,7 +84,7 @@ double intg2(double *X, int i, int j, double lam, int n, int nq) {
     return sum * h1;
 }
 
-double intg1(double X[], int i, double lam, int n, int nq) {
+double intg1(double *X, int i, double lam, int n, int nq) {
     double sum = 0.;
 
     double h1;
