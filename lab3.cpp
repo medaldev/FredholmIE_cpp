@@ -106,7 +106,7 @@ int main_lab3() {
     const double a = 0., b = 1.;
     const double lam = 0.1;
     const int nq = 100;
-    double *X = new double [n];
+    double *X = new double [n + 1];
 
     double h = get_step(a, b, n);
     grid(X, a, b, n);

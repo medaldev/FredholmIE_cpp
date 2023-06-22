@@ -1,12 +1,12 @@
 
 #include <iostream>
 #include "somemodule.h"
-#include "lab3.h"
+#include "lab4.h"
 using namespace std;
 
 
 int main() {
 
-    main_lab3();
+    main_lab4();
     return 0;
 }

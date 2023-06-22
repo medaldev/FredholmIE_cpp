@@ -4,6 +4,10 @@
 #include <iostream>
 #include <tuple>
 #include "somemodule.h"
+
+#include <string>
+#include <fstream>
+
 using namespace std;
 
 double K(double x1, double x2, double y1, double y2) {
@@ -92,6 +96,14 @@ double intg1(tuple<double, double> **X, int i1, int i2, double lam, int n, int n
 
 }
 
+bool saveArray(const double* pdata, size_t length, const std::string& file_path) {
+    std::ofstream os(file_path.c_str(), std::ios::binary | std::ios::out);
+    if (!os.is_open())
+        return false;
+    os.write(reinterpret_cast<const char*>(pdata), std::streamsize(length * sizeof(double)));
+    os.close();
+    return true;
+}
 
 
 int main_lab4() {
@@ -151,6 +163,17 @@ int main_lab4() {
             // cout << "---NNN---" << I << " " << N << "\n";
             A[I][N]=intg1(X, i1, i2, lam, n, nq);
         }
+    }
+
+    ofstream outFile;
+    outFile.open("output.txt", std::ofstream::out | std::ofstream::trunc);
+
+    if (outFile.is_open()) {
+        outFile << "Writing some data to the file.\n";
+        outFile.close();
+
+    } else {
+        std::cout << "Failed to open the file.\n";
     }
 
 
