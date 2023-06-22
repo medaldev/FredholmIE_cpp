@@ -96,15 +96,6 @@ double intg1(tuple<double, double> **X, int i1, int i2, double lam, int n, int n
 
 }
 
-bool saveArray(const double* pdata, size_t length, const std::string& file_path) {
-    std::ofstream os(file_path.c_str(), std::ios::binary | std::ios::out);
-    if (!os.is_open())
-        return false;
-    os.write(reinterpret_cast<const char*>(pdata), std::streamsize(length * sizeof(double)));
-    os.close();
-    return true;
-}
-
 
 int main_lab4() {
 
@@ -165,26 +156,20 @@ int main_lab4() {
         }
     }
 
-    ofstream outFile;
-    outFile.open("output.txt", std::ofstream::out | std::ofstream::trunc);
-
-    if (outFile.is_open()) {
-        outFile << "Writing some data to the file.\n";
-        outFile.close();
-
-    } else {
-        std::cout << "Failed to open the file.\n";
-    }
 
 
     //print_matrix(A, N, N + 1);
     //gauss((double **)&A, n, (double *)&C);
     gauss(A, N, C);
+    ofstream outFile;
+    outFile.open("/home/frihetstein/projects/FredholmIE_cpp/output.txt", std::ofstream::out | std::ofstream::trunc);
     for (int ci = 0; ci < N; ci++) {
         cout << "C[" << ci << "] = " << C[ci] << "   ";
+        //out.write((char*)&array[i][j], sizeof(double));
+        outFile << "C[" << ci << "] = " << C[ci] << "   \n";
         delete[] A[ci];
     }
-
+    outFile.close();
 
     delete[] A;
 
